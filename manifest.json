@@ -3,7 +3,7 @@
   "name": "Save SVG",
   "description": "Save inline SVG images",
   "version": "0.1",
-  "homepage_url": "https://lowentropy.net/",
+  "homepage_url": "https://github.com/martinthomson/save-svg",
 
   "background": {
     "scripts": [
