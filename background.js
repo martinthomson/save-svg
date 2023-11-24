@@ -6,17 +6,16 @@ browser.contextMenus.create({
 
 browser.contextMenus.onClicked.addListener((info, tab) => {
   if (info.menuItemId === "save-svg") {
-    let code = '';
-    code += `var i = browser.menus.getTargetElement(${info.targetElementId}).closest('svg');`;
-    code += `if (i) {`;
-    code += `  var t = (new XMLSerializer()).serializeToString(i);`;
-    code += `  var b = new Blob([t], {type: 'image/svg+xml'});`;
-    code += `  var a = document.createElement('a');`;
-    code += `  a.href = URL.createObjectURL(b);`;
-    code += `  a.download = i.id || 'image';`;
-    code += `  a.click();`;
-    code += `}`;
-    console.log(code);
+    let code = `
+    var i = browser.menus.getTargetElement(${info.targetElementId}).closest('svg');
+    if (i) {
+      var t = (new XMLSerializer()).serializeToString(i);
+      var b = new Blob([t], {type: 'image/svg+xml'});
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(b);
+      a.download = i.id || 'image';
+      a.click();
+    }`;
     browser.tabs.executeScript(tab.id, {
       frameId: info.frameId,
       code,
