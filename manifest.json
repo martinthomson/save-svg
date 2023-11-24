@@ -1,0 +1,20 @@
+{
+  "manifest_version": 2,
+  "name": "Save SVG",
+  "description": "Save inline SVG images",
+  "version": "0.1",
+  "homepage_url": "https://lowentropy.net/",
+
+  "background": {
+    "scripts": [
+      "background.js"
+    ],
+    "persistent": false
+  },
+
+  "permissions": [
+    "activeTab",
+    "contextMenus",
+    "menus"
+  ]
+}
