@@ -6,6 +6,12 @@
   "homepage_url": "https://github.com/martinthomson/save-svg",
   "icons": { "16": "icon.svg", "48": "icon.svg", "96": "icon.svg", "128": "icon.svg" },
 
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "save-svg@lowentropy.net"
+    }
+  },
+
   "background": {
     "scripts": [
       "background.js"
