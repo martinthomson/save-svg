@@ -1,26 +1,36 @@
-browser.contextMenus.create({
-  id: "save-svg",
-  title: "Save SVG...",
-  contexts: ["page", "frame", "link", "selection"],
-}, () => void browser.runtime.lastError);
+function save_svg(id) {
+  var i = browser.menus.getTargetElement(id).closest('svg');
+  if (!i) { return; }
 
-browser.contextMenus.onClicked.addListener((info, tab) => {
-  if (info.menuItemId === "save-svg") {
-    let code = `
-    var i = browser.menus.getTargetElement(${info.targetElementId}).closest('svg');
-    if (i) {
-      var t = (new XMLSerializer()).serializeToString(i);
-      var b = new Blob([t], {type: 'image/svg+xml'});
-      var a = document.createElement('a');
-      a.href = URL.createObjectURL(b);
-      a.download = i.id || 'image';
-      a.click();
-    }`;
-    browser.tabs.executeScript(tab.id, {
-      frameId: info.frameId,
-      code,
-    }).catch(e => {
-      console.warn(`Error in saving SVG: ${e}`);
-    });
-  }
+  var t = (new XMLSerializer()).serializeToString(i);
+  var b = new Blob([t], {type: 'image/svg+xml'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(b);
+  a.download = i.id || 'image';
+  a.click();
+}
+
+browser.runtime.onInstalled.addListener(() => {
+  const MENU = "save-svg";
+
+  browser.contextMenus.create({
+    id: MENU,
+    title: "Save SVG...",
+    contexts: ["page", "frame", "link", "selection"],
+  }, () => void browser.runtime.lastError);
+
+  browser.contextMenus.onClicked.addListener(async (info, tab) => {
+    if (info.menuItemId !== MENU) {
+      return;
+    }
+    try {
+      await browser.scripting.executeScript({
+        target: { tabId: tab.id, frameIds: [ info.frameId ] },
+        args: [info.targetElementId],
+        func: save_svg,
+      })
+    } catch(e) {
+      console.warn(`Error saving SVG: ${e}`);
+    }
+  });
 });
