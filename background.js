@@ -1,3 +1,5 @@
+const MENU = "save-svg";
+
 function save_svg(id) {
   var i = browser.menus.getTargetElement(id).closest('svg');
   if (!i) { return; }
@@ -10,15 +12,7 @@ function save_svg(id) {
   a.click();
 }
 
-browser.runtime.onInstalled.addListener(() => {
-  const MENU = "save-svg";
-
-  browser.contextMenus.create({
-    id: MENU,
-    title: "Save SVG...",
-    contexts: ["page", "frame", "link", "selection"],
-  }, () => void browser.runtime.lastError);
-
+function listen() {
   browser.contextMenus.onClicked.addListener(async (info, tab) => {
     if (info.menuItemId !== MENU) {
       return;
@@ -33,4 +27,17 @@ browser.runtime.onInstalled.addListener(() => {
       console.warn(`Error saving SVG: ${e}`);
     }
   });
-});
+}
+
+function install() {
+  browser.contextMenus.create({
+    id: MENU,
+    title: "Save SVG...",
+    contexts: ["page", "frame", "link", "selection"],
+  }, () => void browser.runtime.lastError);
+
+  listen();
+}
+
+browser.runtime.onInstalled.addListener(install);
+browser.runtime.onStartup.addListener(listen);
