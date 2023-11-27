@@ -11,6 +11,7 @@ function save_svg(id) {
     }, 0) + 1;
     d.style.position = 'fixed';
     d.style.bottom = '50px';
+    d.style.margin = 'auto';
     d.style.padding = '10px 30px';
     d.style.font = 'normal bold 20px/20px sans-serif';
     d.style.color = 'white';
