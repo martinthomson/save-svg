@@ -5,9 +5,8 @@ function save_svg(id) {
     let d = document.createElement('dialog');
     d.style.display = 'block';
     d.style.zIndex = [...document.body.children].reduce((a, e) => {
-      return e.style
-        ? Math.max(a, parseInt(e.style.getPropertyValue("z-index")))
-        : 0;
+      let z = parseInt(getComputedStyle(e).zIndex);
+      return z && Math.max(a, z) || a;
     }, 0) + 1;
     d.style.position = 'fixed';
     d.style.bottom = '50px';
