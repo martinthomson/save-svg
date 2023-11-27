@@ -1,8 +1,38 @@
 const MENU = "save-svg";
 
 function save_svg(id) {
+  function status(msg) {
+    let d = document.createElement('dialog');
+    d.style.display = 'block';
+    d.style.zIndex = [...document.body.children].reduce((a, e) => {
+      return e.style
+        ? Math.max(a, parseInt(e.style.getPropertyValue("z-index")))
+        : 0;
+    }, 0) + 1;
+    d.style.position = 'fixed';
+    d.style.bottom = '50px';
+    d.style.padding = '10px 30px';
+    d.style.font = 'normal bold 20px/20px sans-serif';
+    d.style.color = 'white';
+    d.style.backgroundColor = 'rgb(34, 102, 68)';
+    d.style.border = '2px solid rgb(13, 49, 31)';
+    d.style.borderRadius = '8px';
+    d.style.opacity = 0.8;
+    d.style.transition = 'opacity 1s linear';
+    d.textContent = msg;
+    d.onclick = _ => document.body.removeChild(d);
+    document.body.appendChild(d);
+    window.setTimeout(_ => {
+      d.style.opacity = 0;
+      window.setTimeout(_ => document.body.removeChild(d), 1000);
+    }, 2000);
+  }
+
   var i = browser.menus.getTargetElement(id).closest('svg');
-  if (!i) { return; }
+  if (!i) {
+    status("No SVG found");
+    return;
+  }
 
   var t = (new XMLSerializer()).serializeToString(i);
   var b = new Blob([t], {type: 'image/svg+xml'});
@@ -10,13 +40,14 @@ function save_svg(id) {
   a.href = URL.createObjectURL(b);
   a.download = i.id || 'image';
   a.click();
+  status("SVG saved");
 }
 
 browser.runtime.onInstalled.addListener(() => {
   browser.contextMenus.create({
     id: MENU,
-    title: "Save SVG...",
-    contexts: ["page", "frame", "link", "selection"],
+    title: 'Save SVG...',
+    contexts: ['page', 'frame', 'link', 'selection'],
   }, () => void browser.runtime.lastError);
 });
 
